@@ -37,6 +37,11 @@ static const int64 MAX_MONEY = 30000000 * COIN;
 static const int64 MAX_MINT_PROOF_OF_WORK = 10 * COIN;
 static const int64 MAX_MINT_PROOF_OF_STAKE = 1 * COIN;
 static const int64 MIN_TXOUT_AMOUNT = MIN_TX_FEE;
+/** Split/Combine Threshold Max */
+static const int64 MAX_SPLIT_AMOUNT = 200 * COIN;
+static const int64 MAX_COMBINE_AMOUNT = MAX_SPLIT_AMOUNT * 2;
+//Fix Timewrap Fork Value
+static const unsigned int VERSION2_SWITCH_TIME = 1444435200; // Sat, 10 Oct 2015 00:00:00 GMT
 
 static const unsigned int ENTROPY_SWITCH_TIME = 1362791041; // Sat, 09 Mar 2013 01:04:01 GMT
 static const unsigned int STAKE_SWITCH_TIME = 1371686400; // Thu, 20 Jun 2013 00:00:00 GMT
@@ -89,6 +94,8 @@ extern std::map<uint256, CBlock*> mapOrphanBlocks;
 // Settings
 extern int64 nTransactionFee;
 extern int64 nMinimumInputValue;
+extern int64 nCombineThreshold;
+extern int64 nSplitThreshold;
 extern bool fStakeUsePooledKeys;
 extern unsigned int nDerivationMethodIndex;
 

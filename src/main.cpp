@@ -80,6 +80,8 @@ const string strMessageMagic = "DollarPounds Signed Message:\n";
 // Settings
 int64 nTransactionFee = MIN_TX_FEE;
 int64 nMinimumInputValue = MIN_TX_FEE;
+int64 nSplitThreshold = 10 * COIN;
+int64 nCombineThreshold = nSplitThreshold * 2;
 
 bool fStakeUsePooledKeys = false;
 extern enum Checkpoints::CPMode CheckpointsMode;
@@ -965,6 +967,10 @@ int64 GetProofOfWorkReward(unsigned int nBits)
 int64 GetProofOfStakeReward(int64 nCoinAge, unsigned int nBits, unsigned int nTime, bool bCoinYearOnly)
 {
     int64 nRewardCoinYear, nSubsidy, nSubsidyLimit = 10 * COIN;
+    if (nTime > VERSION2_SWITCH_TIME)
+		{
+			nSubsidyLimit = 1000 * COIN;
+		}
 
     if(fTestNet || nTime > STAKE_SWITCH_TIME)
     {
@@ -1127,13 +1133,16 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
     if (pindexPrevPrev->pprev == NULL)
         return bnTargetLimit.GetCompact(); // second block
 
+        
     int64 nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
-
-    // ppcoin: target change every block
-    // ppcoin: retarget with exponential moving toward target spacing
+    int64 nTargetSpacing = fProofOfStake? nStakeTargetSpacing : min(nTargetSpacingWorkMax, (int64) nStakeTargetSpacing * (1 + pindexLast->nHeight - pindexPrev->nHeight));
+       
+    if (nActualSpacing < 0 && pindexLast->GetBlockTime() > VERSION2_SWITCH_TIME)
+          nActualSpacing = nTargetSpacing;
+          
     CBigNum bnNew;
     bnNew.SetCompact(pindexPrev->nBits);
-    int64 nTargetSpacing = fProofOfStake? nStakeTargetSpacing : min(nTargetSpacingWorkMax, (int64) nStakeTargetSpacing * (1 + pindexLast->nHeight - pindexPrev->nHeight));
+
     int64 nInterval = nTargetTimespan / nTargetSpacing;
     bnNew *= ((nInterval - 1) * nTargetSpacing + nActualSpacing + nActualSpacing);
     bnNew /= ((nInterval + 1) * nTargetSpacing);
@@ -2943,12 +2952,12 @@ string GetWarnings(string strFor)
     // * Should not enter safe mode for longer invalid chain
     // * If sync-checkpoint is too old do not enter safe mode
     // * Display warning only in the STRICT mode
-    if (CheckpointsMode == Checkpoints::STRICT && Checkpoints::IsSyncCheckpointTooOld(60 * 60 * 24 * 60) &&
-        !fTestNet && !IsInitialBlockDownload())
-    {
-        nPriority = 100;
-        strStatusBar = _("WARNING: Checkpoint is too old. Wait for block chain to download, or notify developers.");
-    }
+    //if (CheckpointsMode == Checkpoints::STRICT && Checkpoints::IsSyncCheckpointTooOld(60 * 60 * 24 * 60) &&
+    //    !fTestNet && !IsInitialBlockDownload())
+    //{
+    //    nPriority = 100;
+    //    strStatusBar = _("WARNING: Checkpoint is too old. Wait for block chain to download, or notify developers.");
+    //}
 
     // ppcoin: if detected invalid checkpoint enter safe mode
     if (Checkpoints::hashInvalidCheckpoint != 0)
