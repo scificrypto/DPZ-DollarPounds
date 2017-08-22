@@ -52,7 +52,7 @@ unsigned int nModifierInterval = 3 * 60 * 60; // time to elapse before new modif
 
 
 int nCoinbaseMaturity = 100;
-int nCoinbaseMaturityMultipiler = 400;
+int nCoinbaseMaturityMultipiler = 2;
 CBlockIndex* pindexGenesisBlock = NULL;
 int nBestHeight = -1;
 
@@ -960,6 +960,8 @@ CBigNum inline GetProofOfStakeLimit(int nHeight, unsigned int nTime)
 int64 GetProofOfWorkReward(unsigned int nBits)
 {	
     int64 nSubsidy = 10 * COIN;
+    if (pindexBest->GetBlockTime() > VERSION3_SWITCH_TIME)
+        nSubsidy = 1 * COIN;
     
     return min(nSubsidy, nSubsidy);
 }
@@ -971,6 +973,10 @@ int64 GetProofOfStakeReward(int64 nCoinAge, unsigned int nBits, unsigned int nTi
     if (nTime > VERSION2_SWITCH_TIME)
 		{
 			nSubsidyLimit = 1000 * COIN;
+            if (nTime > VERSION3_SWITCH_TIME)
+		    {
+			  nSubsidyLimit = 1 * COIN;
+		    }
 		}
 
     if(fTestNet || nTime > STAKE_SWITCH_TIME)

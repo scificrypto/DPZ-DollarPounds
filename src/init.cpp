@@ -31,6 +31,7 @@ CClientUIInterface uiInterface;
 std::string strWalletFileName;
 unsigned int nNodeLifespan;
 unsigned int nDerivationMethodIndex;
+unsigned int nMinerSleep;
 enum Checkpoints::CPMode CheckpointsMode;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -363,6 +364,7 @@ bool AppInit2()
 
     nNodeLifespan = GetArg("-addrlifespan", 7);
     fStakeUsePooledKeys = GetBoolArg("-stakepooledkeys", false);
+    nMinerSleep = GetArg("-minersleep", 500);
 
     CheckpointsMode = Checkpoints::STRICT;
     std::string strCpMode = GetArg("-cppolicy", "strict");

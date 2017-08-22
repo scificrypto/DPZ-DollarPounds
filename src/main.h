@@ -42,7 +42,7 @@ static const int64 MAX_SPLIT_AMOUNT = 200 * COIN;
 static const int64 MAX_COMBINE_AMOUNT = MAX_SPLIT_AMOUNT * 2;
 //Fix Timewrap Fork Value
 static const unsigned int VERSION2_SWITCH_TIME = 1444435200; // Sat, 10 Oct 2015 00:00:00 GMT
-
+static const unsigned int VERSION3_SWITCH_TIME = 1504224000; // Fri, 01 Sep 2017 00:00:00 GMT
 static const unsigned int ENTROPY_SWITCH_TIME = 1362791041; // Sat, 09 Mar 2013 01:04:01 GMT
 static const unsigned int STAKE_SWITCH_TIME = 1371686400; // Thu, 20 Jun 2013 00:00:00 GMT
 static const unsigned int TARGETS_SWITCH_TIME = 1374278400; // Sat, 20 Jul 2013 00:00:00 GMT
